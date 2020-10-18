@@ -127,7 +127,7 @@ public class MySQLdb extends DbConnector {
             ResultSetMetaData rsmd=rs.getMetaData();
             int size = rsmd.getColumnCount();
             TableColumnData col;
-            for (int i = 1; i < size+1; i++) {
+            for (int i = 1; i <= size; i++) {
                 col = new TableColumnData();
                 col.setName( rsmd.getColumnName( i ) );
                 col.setType(rsmd.getColumnTypeName( i ) );
@@ -165,28 +165,24 @@ public class MySQLdb extends DbConnector {
                 System.out.println("Error 3");
                 return;
             }
-            System.out.println("...Showing"); 
-            for( TableColumnData col : this.mColumNames){
-                System.out.println("Column: ["+col+"]");
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int size = rsmd.getColumnCount();
+
+            // Extract data from result set
+            while (rs.next()) {
+                //Retrieve by column name
+                int id = rs.getInt("id");
+                int age = rs.getInt("age");
+                String first = rs.getString("first");
+                String last = rs.getString("last");
+                
+
+                //Display values
+                System.out.print("ID: " + id);
+                System.out.print(", Age: " + age);
+                System.out.print(", First: " + first);
+                System.out.println(", Last: " + last);
             }
-//            ResultSetMetaData rsmd = rs.getMetaData();
-//            int size = rsmd.getColumnCount();
-//
-//            // Extract data from result set
-//            while (rs.next()) {
-//                //Retrieve by column name
-//                int id = rs.getInt("id");
-//                int age = rs.getInt("age");
-//                String first = rs.getString("first");
-//                String last = rs.getString("last");
-//                
-//
-//                //Display values
-//                System.out.print("ID: " + id);
-//                System.out.print(", Age: " + age);
-//                System.out.print(", First: " + first);
-//                System.out.println(", Last: " + last);
-//            }
             //STEP 6: Clean-up environment
             rs.close();
             stmt.close();
@@ -194,5 +190,12 @@ public class MySQLdb extends DbConnector {
         } catch (Exception e) {
             mErrors.setError("(MySQLdb - executeQuery):" + e.getMessage());
         }
+    }
+    /**
+     * It get the result of the query and set the result in a vector.
+     * @param rs 
+     */
+    protected void getQueryResult( ResultSet rs){
+        
     }
 }

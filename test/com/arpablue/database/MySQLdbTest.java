@@ -36,10 +36,11 @@ public class MySQLdbTest {
     @After
     public void tearDown() {
     }
-    public MySQLdb initDb(){
-        MySQLdb db = new MySQLdb();
+    public DbConnector initDb(){
+        DbConnector db = new MySQLdb();
         db.setHost("localhost");
-        db.setDatabase("ablightningbug");
+//        db.setDatabase("ablightningbug");
+        db.setDatabase("test");
         db.setUser("noroot");
         db.setPassword("noroot");
         return db;
@@ -47,7 +48,7 @@ public class MySQLdbTest {
     @Test
     public void test_toString_Data(){
         System.out.println("--------------test_toString_Data");
-        MySQLdb db = initDb();
+        DbConnector db = initDb();
         System.out.println( db );
     }
 
@@ -58,7 +59,7 @@ public class MySQLdbTest {
     public void test_MySQLdb_Open() {
         
         System.out.println("--------------test_MySQLdb_Open");
-        MySQLdb db = initDb();
+        DbConnector db = initDb();
         if( !db.open() ){
             System.out.println( db.getErrors() );
             fail("It is not possible connect with the database.");
@@ -76,7 +77,7 @@ public class MySQLdbTest {
     public void test_MySQLdb_GetTables() {
         
         System.out.println("--------------test_MySQLdb_GetTables");
-        MySQLdb db = initDb();
+        DbConnector db = initDb();
         if( !db.open() ){
             System.out.println( db.getErrors() );
             fail("It is not possible connect with the database.");
