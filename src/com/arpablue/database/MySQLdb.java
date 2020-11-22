@@ -22,6 +22,7 @@ public class MySQLdb extends DbConnector {
 
     protected String mPrefix = "jdbc:mysql:"; // It is the prefix of the connextion 
     protected Connection mCon;
+    protected String mStrLastQuery;
     
     protected ArrayList<TableColumnData> mColumNames = new ArrayList<TableColumnData>();
 
@@ -118,7 +119,7 @@ public class MySQLdb extends DbConnector {
      * @param rs It is the result set to extract the data
      * @return It is true if the data has been collected without problems.
      */
-    public boolean getColumData(ResultSet rs){
+    protected boolean getColumData(ResultSet rs){
         if( rs == null ){
             return false;
         }
@@ -140,48 +141,58 @@ public class MySQLdb extends DbConnector {
         return true;
     }
     /**
+     * It return the lis of columns of the last query.
+     * @return It is the list of columns name.
+     */
+    @Override
+    public  ArrayList<String> getColums(){
+        ArrayList<String>  res = new ArrayList<String>();
+        if( this.mColumNames == null ){
+            return res;
+        }
+        for( TableColumnData colum : this.mColumNames){
+            res.add( colum.getName() );
+        }
+        return res;
+    }
+    /**
      * It execute a query in the database.
      *
      * @param query It is the sql sentences.
      */
-    public void executeQuery(String sql) {
+    @Override
+    public ArrayList<String> executeQuery(String sql) {
+        this.mStrLastQuery = sql;
+        ArrayList<String> res = new ArrayList<String>();
+        if( sql == null ){
+            return res;
+        }
         System.out.println("Executing query: ["+sql+"]");
         Statement stmt = null;
         try {
             if (StringManager.isEmpty(sql)) {
                 mErrors.setError("(MySQLdb - executeQuery): The sql sentences can not be empty.");
-                System.out.println("Error 1");
-                return;
+                return res;
             }
             if (!isOpen()) {
                 mErrors.setError("(MySQLdb - executeQuery): The database connection is not open.");
-                System.out.println("Error 2");
-                return;
+                return res;
             }
             stmt = mCon.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             
             if(!getColumData( rs )){
-                System.out.println("Error 3");
-                return;
+                return res;
             }
             ResultSetMetaData rsmd = rs.getMetaData();
             int size = rsmd.getColumnCount();
 
             // Extract data from result set
             while (rs.next()) {
-                //Retrieve by column name
-                int id = rs.getInt("id");
-                int age = rs.getInt("age");
-                String first = rs.getString("first");
-                String last = rs.getString("last");
-                
-
-                //Display values
-                System.out.print("ID: " + id);
-                System.out.print(", Age: " + age);
-                System.out.print(", First: " + first);
-                System.out.println(", Last: " + last);
+                for( int i = 1; i <= size; i++){
+                    System.out.println("____>"+ rs.getString(i));
+                    res.add( rs.getString(i) );
+                }
             }
             //STEP 6: Clean-up environment
             rs.close();
@@ -189,13 +200,21 @@ public class MySQLdb extends DbConnector {
             
         } catch (Exception e) {
             mErrors.setError("(MySQLdb - executeQuery):" + e.getMessage());
+            
         }
+        return res;
     }
     /**
      * It get the result of the query and set the result in a vector.
      * @param rs 
      */
-    protected void getQueryResult( ResultSet rs){
+    protected void  getQueryResult( ResultSet rs){
         
+        
+    }
+
+    @Override
+    public String getTableDescription(String table) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

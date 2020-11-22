@@ -8,7 +8,7 @@ package com.arpablue.database;
 import java.sql.ResultSetMetaData;
 
 /**
- *
+ * It contains the description of a colum, like the name, description and type.
  * @author engau
  */
 public class TableColumnData {

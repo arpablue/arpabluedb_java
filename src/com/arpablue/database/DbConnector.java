@@ -16,7 +16,18 @@ public abstract class DbConnector extends DbConnectorBase{
      * It execute an SQL sentences and return the response.
      * @param sql 
      */
-    public abstract void executeQuery(String sql);
+    public abstract ArrayList<String> executeQuery(String sql);
+    /**
+     * It return the columns ofthe last query.
+     * @return 
+     */
+    public abstract ArrayList<String> getColums();
+    /**
+     * It reurn the description of table.
+     * @param table It is the name of the table to get the description.
+     * @return
+     */
+    public abstract  String getTableDescription(String table);
     /**
      * It return the tables of the database.
      * @return It is the list of the tables in the database.
